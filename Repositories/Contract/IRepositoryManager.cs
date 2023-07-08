@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Repositories.Contract
 {
-    internal interface IRepositoryManager
+    public interface IRepositoryManager
     {
+        IBookRepository Book { get; }
+        void Save();
     }
 }
