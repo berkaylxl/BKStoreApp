@@ -1,13 +1,6 @@
 ﻿using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Repositories.EfCore.Config;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repositories.EfCore
 {
