@@ -1,3 +1,6 @@
 2023-07-13 14:12:44.1523 Info Message Template Auto Format enabled
 2023-07-13 14:12:44.3959 Info Registered target NLog.Targets.FileTarget(Name=logfile)
 2023-07-13 14:12:44.4502 Info Validating config: TargetNames=logfile, ConfigItems=12, FilePath=C:\Users\Berkay\source\repos\BKStoreApp\WebAPI\nLog.config
+2023-07-13 20:12:17.8239 Info Message Template Auto Format enabled
+2023-07-13 20:12:18.0445 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2023-07-13 20:12:18.1144 Info Validating config: TargetNames=logfile, ConfigItems=12, FilePath=C:\Users\Berkay\source\repos\BKStoreApp\WebAPI\nLog.config
