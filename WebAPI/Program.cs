@@ -8,9 +8,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-LogManager.LoadConfiguration(String.Concat(Directory.GetCurrentDirectory(),"/nLog.config"));
+LogManager.LoadConfiguration(String.Concat(Directory.GetCurrentDirectory(), "/nLog.config"));
 
-builder.Services.AddControllers()
+builder.Services.AddControllers(config =>
+{
+    config.RespectBrowserAcceptHeader = true;
+    config.ReturnHttpNotAcceptable = true;
+})
+    .AddXmlDataContractSerializerFormatters()
     .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
 
 builder.Services.AddEndpointsApiExplorer();
@@ -37,7 +42,7 @@ if (app.Environment.IsProduction())
     app.UseHsts();
 }
 
-    app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
