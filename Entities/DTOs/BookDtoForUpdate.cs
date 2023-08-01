@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Entities.DTOs
 {
-    public record BookDtoForUpdate(int Id, string Title, decimal Price);  
+	public  record BookDtoForUpdate : BookDtoForManipulation
+    {
+        [Required]
+        public int Id { get; init; }
+    }
 }
