@@ -2,12 +2,10 @@
 using Entities.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Services.Contracts;
-using System.Net;
-using System.Runtime.CompilerServices;
 
 namespace WebAPI.Extensions
 {
-    public static class ExceptionMiddlewareExtensions
+	public static class ExceptionMiddlewareExtensions
     {
         public static void ConfigureExceptionHandler(this WebApplication app,ILoggerService logger)
         {

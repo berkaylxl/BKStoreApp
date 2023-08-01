@@ -6,6 +6,5 @@ using System.Threading.Tasks;
 
 namespace Entities.DTOs
 {
-    public record BookDtoForUpdate(int Id, string Title, decimal Price);
-  
+    public record BookDtoForUpdate(int Id, string Title, decimal Price);  
 }
