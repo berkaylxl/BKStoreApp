@@ -40,16 +40,10 @@ namespace Presentation.Controllers
 			return StatusCode(201, book);
 		}
 
+		[ServiceFilter(typeof(ValidationFilterAttribute))]
 		[HttpPut("{id:int}")]
 		public async Task<IActionResult> UpdateOneBookAsync([FromRoute(Name = "id")] int id, [FromBody] BookDtoForUpdate bookDto)
 		{
-
-			if (bookDto is null) { return BadRequest(); }
-
-			if (!ModelState.IsValid)
-			{
-				return UnprocessableEntity(ModelState);
-			}
 			await _manager.BookService.UpdateOneBookAsync(id, bookDto, false);
 			return NoContent();
 		}
@@ -57,7 +51,6 @@ namespace Presentation.Controllers
 		[HttpDelete("{id:int}")]
 		public async Task<IActionResult> DeleteOneBookAsync([FromRoute(Name = "id")] int id)
 		{
-
 			await _manager.BookService.DeleteOneBookAsync(id, false);
 			return NoContent();
 		}
