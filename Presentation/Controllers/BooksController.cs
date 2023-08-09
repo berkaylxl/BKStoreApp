@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
+using System.Linq.Expressions;
 
 namespace Presentation.Controllers
 {
@@ -17,59 +18,72 @@ namespace Presentation.Controllers
 		}
 
 		[HttpGet("{id:int}")]
-		public IActionResult GetOneBook([FromRoute(Name = "id")] int id)
+		public async  Task<IActionResult> GetOneBook([FromRoute(Name = "id")] int id)
 		{
-			var book = _manager.BookService.GetOneBookById(id, false);
+			var book = await _manager.BookService.GetOneBookByIdAsync(id, false);
 			return Ok(book);
 		}
 
 		[HttpGet]
-		public IActionResult GetAllBooks()
+		public async Task<IActionResult> GetAllBooks()
 		{
-			var books = _manager.BookService.GetAllBooks(false);
+			var books = await _manager.BookService.GetAllBooksAsync(false);
 			return Ok(books);
 		}
 
 		[HttpPost]
-		public IActionResult CreateOneBook([FromBody] BookDtoForInsertion bookDto)
+		public async Task<IActionResult> CreateOneBook([FromBody] BookDtoForInsertion bookDto)
 		{
 			if (bookDto is null) { return BadRequest(); }
 
-			var book = _manager.BookService.CreateOneBook(bookDto);
+			if(!ModelState.IsValid)
+			{
+				return UnprocessableEntity(ModelState);
+			}
+
+			var book = await _manager.BookService.CreateOneBookAsync(bookDto);
 			return StatusCode(201, book);
 		}
 
 		[HttpPut("{id:int}")]
-		public IActionResult UpdateOneBook([FromRoute(Name = "id")] int id, [FromBody] BookDtoForUpdate bookDto)
+		public async Task<IActionResult> UpdateOneBook([FromRoute(Name = "id")] int id, [FromBody] BookDtoForUpdate bookDto)
 		{
 
 			if (bookDto is null) { return BadRequest(); }
-			_manager.BookService.UpdateOneBook(id, bookDto, true);
+
+			if (!ModelState.IsValid)
+			{
+				return UnprocessableEntity(ModelState);
+			}
+			await _manager.BookService.UpdateOneBookAsync(id, bookDto, false);
 			return NoContent();
 		}
 
 		[HttpDelete("{id:int}")]
-		public IActionResult DeleteOneBook([FromRoute(Name = "id")] int id)
+		public async Task<IActionResult> DeleteOneBook([FromRoute(Name = "id")] int id)
 		{
 
-			_manager.BookService.DeleteOneBook(id, false);
+			await _manager.BookService.DeleteOneBookAsync(id, false);
 			return NoContent();
 		}
 
 		[HttpPatch("{id:int}")]
-		public IActionResult PartiallyUpdateOneBook([FromRoute(Name = "id")] int id, [FromBody] JsonPatchDocument<BookDto> bookPatch)
+		public async Task<IActionResult> PartiallyUpdateOneBook([FromRoute(Name = "id")] int id, [FromBody] JsonPatchDocument<BookDtoForUpdate> bookPatch)
 		{
-			var entity = _manager.BookService.GetOneBookById(id, false);
+			if (bookPatch is null)
+				return BadRequest();
 
-			bookPatch.ApplyTo(entity);
-			_manager.BookService.UpdateOneBook(id,
-				 new BookDtoForUpdate()
-				 {
-					 Id = entity.Id,
-					 Title = entity.Title,
-					 Price = entity.Price
-				 },
-				 true);
+			var result =await _manager.BookService.GetOneBookForPatchAsync(id, false);
+
+			var entity = await _manager.BookService.GetOneBookByIdAsync(id, false);
+
+			bookPatch.ApplyTo(result.bookDtoForUpdate,ModelState);
+
+			TryValidateModel(result.bookDtoForUpdate);
+			if (!ModelState.IsValid)
+				return UnprocessableEntity(ModelState);
+
+			await _manager.BookService.SaveChangesForPatchAsync(result.bookDtoForUpdate, result.book);
 			return NoContent();
 		}
 

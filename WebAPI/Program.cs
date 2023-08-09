@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using Repositories.EfCore;
@@ -19,6 +20,11 @@ builder.Services.AddControllers(config =>
 	.AddCustomCsvFormatter()
 	.AddXmlDataContractSerializerFormatters()
     .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
