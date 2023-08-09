@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 
 namespace Presentation.Controllers
 {
+	[ServiceFilter(typeof(LogFilterAttribute))]
 	[ApiController]
 	[Route("api/[controller]")]
 	public class BooksController : ControllerBase
@@ -19,7 +20,7 @@ namespace Presentation.Controllers
 		}
 
 		[HttpGet("{id:int}")]
-		public async  Task<IActionResult> GetOneBookAsync([FromRoute(Name = "id")] int id)
+		public async Task<IActionResult> GetOneBookAsync([FromRoute(Name = "id")] int id)
 		{
 			var book = await _manager.BookService.GetOneBookByIdAsync(id, false);
 			return Ok(book);
@@ -35,7 +36,7 @@ namespace Presentation.Controllers
 		[ServiceFilter(typeof(ValidationFilterAttribute))]
 		[HttpPost]
 		public async Task<IActionResult> CreateOneBookAsync([FromBody] BookDtoForInsertion bookDto)
-		{		
+		{
 			var book = await _manager.BookService.CreateOneBookAsync(bookDto);
 			return StatusCode(201, book);
 		}
@@ -61,11 +62,11 @@ namespace Presentation.Controllers
 			if (bookPatch is null)
 				return BadRequest();
 
-			var result =await _manager.BookService.GetOneBookForPatchAsync(id, false);
+			var result = await _manager.BookService.GetOneBookForPatchAsync(id, false);
 
 			var entity = await _manager.BookService.GetOneBookByIdAsync(id, false);
 
-			bookPatch.ApplyTo(result.bookDtoForUpdate,ModelState);
+			bookPatch.ApplyTo(result.bookDtoForUpdate, ModelState);
 
 			TryValidateModel(result.bookDtoForUpdate);
 			if (!ModelState.IsValid)
