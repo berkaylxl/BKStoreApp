@@ -13,11 +13,11 @@ namespace Presentation.ActionFilters
 			var param = context.ActionArguments.SingleOrDefault(param => param.Value.ToString().Contains("Dto")).Value;
 
 
-			if (param != null)
+			if (param is null)
 			{
 				context.Result = new BadRequestObjectResult($"Object is null. " +
-					$"Controller : {controller} " +
-					$"Action : {action }");
+					$"Controller :{controller} " +
+					$"  Action :{action }");
 				return;
 			}
 
